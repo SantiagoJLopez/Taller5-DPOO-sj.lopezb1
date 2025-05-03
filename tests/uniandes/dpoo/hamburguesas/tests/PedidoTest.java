@@ -13,7 +13,10 @@ import uniandes.dpoo.hamburguesas.mundo.Pedido;
 import uniandes.dpoo.hamburguesas.mundo.Ingrediente;
 
 import java.io.File;
-import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 class PedidoTest {
@@ -50,6 +53,8 @@ Combo combo;
 		pedido1 = new Pedido("Ignacio", "Boyaca");
 		pedido2 = new Pedido("Ortencio", "Peru");
 		pedido3 = new Pedido("Eustaquio", "Rusia");
+		
+		
     }
 
     @AfterEach
@@ -206,6 +211,78 @@ Combo combo;
  			   + "Precio Neto:  63500\n"
  			   + "IVA:          12065\n"
  			   + "Precio Total: 75565\n", pedido1.generarTextoFactura(), "No se ha podido generar un texto para un pedido vacio");
+    }
+    
+    void setGuardarFactura() throws FileNotFoundException  {
+    	pedido1.agregarProducto(productoMenu1);
+    	pedido2.agregarProducto(productoMenu1);
+    	pedido2.agregarProducto(productoAjustado);
+    	pedido3.agregarProducto(productoMenu1);
+    	pedido3.agregarProducto(productoAjustado);
+    	pedido3.agregarProducto(combo);
+    	
+    	pedido1.guardarFactura(new File("factura_1.txt"));
+    	pedido2.guardarFactura(new File("factura_2.txt"));
+    	pedido3.guardarFactura(new File("factura_3.txt"));
+    }
+    
+    void cleanGuardarFactura() throws IOException  {
+    	Files.deleteIfExists(Path.of("factura_1.txt"));
+    	Files.deleteIfExists(Path.of("factura_2.txt"));
+    	Files.deleteIfExists(Path.of("factura_3.txt"));
+    }
+    
+    @Test
+    void testGuardarFactura() throws IOException {
+    	setGuardarFactura();
+    	
+    	String contenido1 = Files.readString(Path.of("factura_1.txt"));
+    	assertEquals("Cliente: Ignacio\n"
+  			   + "Dirección: Boyaca\n"
+  			   + "----------------\n"
+  			   + "hamburguesa\n"
+  			   + "            20000\n"
+  			   + "----------------\n"
+  			   + "Precio Neto:  20000\n"
+  			   + "IVA:          3800\n"
+  			   + "Precio Total: 23800\n", contenido1, "No...");
+    	
+    	String contenido2 = Files.readString(Path.of("factura_2.txt"));
+    	assertEquals("Cliente: Ortencio\n"
+  			   + "Dirección: Peru\n"
+  			   + "----------------\n"
+  			   + "hamburguesa\n"
+  			   + "            20000\n"
+  			   + "hamburguesa\n"
+  			   + "    +tomate\n"
+  			   + "                1000\n"
+  			   + "    -mostaza\n"
+  			   + "            21000\n"
+  			   + "----------------\n"
+  			   + "Precio Neto:  41000\n"
+  			   + "IVA:          7790\n"
+  			   + "Precio Total: 48790\n", contenido2, "No...");
+    	
+    	String contenido3 = Files.readString(Path.of("factura_3.txt"));
+    	assertEquals("Cliente: Eustaquio\n"
+  			   + "Dirección: Rusia\n"
+  			   + "----------------\n"
+  			   + "hamburguesa\n"
+  			   + "            20000\n"
+  			   + "hamburguesa\n"
+  			   + "    +tomate\n"
+  			   + "                1000\n"
+  			   + "    -mostaza\n"
+  			   + "            21000\n"
+  			   + "Combo marujas\n"
+  			   + " Descuento: 0.1\n"
+  			   + "            22500\n"
+  			   + "----------------\n"
+  			   + "Precio Neto:  63500\n"
+  			   + "IVA:          12065\n"
+  			   + "Precio Total: 75565\n", contenido3, "No...");
+    	
+    	cleanGuardarFactura();
     }
     
 }

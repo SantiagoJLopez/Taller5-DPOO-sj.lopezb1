@@ -73,6 +73,11 @@ public class Pedido
         return nombreCliente;
     }
     
+    public String getDireccionCliente( )
+    {
+        return direccionCliente;
+    }
+    
     public ArrayList<Producto> getProductos(){
     	return productos;
     }

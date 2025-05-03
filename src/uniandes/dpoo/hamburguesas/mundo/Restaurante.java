@@ -115,7 +115,11 @@ public class Restaurante
     {
         return pedidoEnCurso;
     }
-
+    
+    public void setPedidoEnCurso(Pedido nuevoPedido) {
+    	pedidoEnCurso = nuevoPedido;
+    }
+    
     /**
      * Retorna la lista completa de pedidos cerrados en el restaurante.
      * 

@@ -62,6 +62,11 @@ public class Combo implements Producto
      * 
      * El texto incluye el nombre del combo, su costo y el valor del descuento
      */
+    
+    public ArrayList<ProductoMenu> getItemsCombo(){
+    	return itemsCombo;
+    }
+    
     @Override
     public String generarTextoFactura( )
     {
